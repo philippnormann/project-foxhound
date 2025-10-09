@@ -1,0 +1,29 @@
+{
+  "manifest_version": 2,
+  "name": "Foxhound Taint Exporter",
+  "version": "0.0.1",
+  "description": "Export any taint flows detected by Foxhound to an external service.",
+  "author": "Thomas Barber, Souphiane Bensalim",
+
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "taint-exporter@sap.com"
+    }
+  },
+
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": [
+        "taint-export.js"
+      ],
+      "all_frames": true,
+      "run_at": "document_start"
+    }
+  ],
+
+  "permissions": [
+    "<all_urls>",
+    "webRequest"
+  ]
+}
