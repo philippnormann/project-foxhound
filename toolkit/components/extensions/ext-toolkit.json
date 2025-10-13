@@ -164,6 +164,12 @@
     "schema": "chrome://extensions/content/schemas/test.json",
     "scopes": ["content_child"]
   },
+  "tainting": {
+    "url": "chrome://extensions/content/parent/ext-tainting.js",
+    "schema": "chrome://extensions/content/schemas/tainting.json",
+    "scopes": ["addon_parent", "addon_child", "content_parent", "content_child"],
+    "paths": [["tainting"]]
+  },
   "theme": {
     "url": "chrome://extensions/content/parent/ext-theme.js",
     "schema": "chrome://extensions/content/schemas/theme.json",
