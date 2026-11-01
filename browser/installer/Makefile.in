@@ -109,6 +109,9 @@ include $(topsrcdir)/toolkit/mozapps/installer/packager.mk
 BINPATH = $(MOZ_PKG_BINPATH)
 ifeq (Darwin,$(OS_TARGET))
 DEFINES += -DAPPNAME='$(MOZ_MACBUNDLE_NAME)'
+ifneq (,$(wildcard $(DIST)/$(MOZ_MACBUNDLE_NAME)/Contents/Resources/Assets.car))
+DEFINES += -DMAC_ASSETS_CAR
+endif
 endif
 DEFINES += -DBINPATH='$(BINPATH)'
 

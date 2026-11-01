@@ -55,7 +55,7 @@ integration).](https://foxhound.ias.tu-bs.de/)
 In case you have any issues with the provided binaries, feel free to open an issue here.
 
 ## Building
-The "Foxhound" browser can be built mostly by following instructions on how to build [Firefox](https://firefox-source-docs.mozilla.org/setup/), for either [Linux](https://firefox-source-docs.mozilla.org/setup/linux_build.html) or [Windows](https://firefox-source-docs.mozilla.org/setup/windows_build.html). In theory [Mac](https://firefox-source-docs.mozilla.org/setup/macos_build.html) builds are also possible, but this has not been tested!
+The "Foxhound" browser can be built mostly by following instructions on how to build [Firefox](https://firefox-source-docs.mozilla.org/setup/) for [Linux](https://firefox-source-docs.mozilla.org/setup/linux_build.html), [Windows](https://firefox-source-docs.mozilla.org/setup/windows_build.html), or [macOS](https://firefox-source-docs.mozilla.org/setup/macos_build.html).
 
 ### Bootstrapping
 First, you need to install the toolchains (compilers etc.) required to build project "Foxhound". Luckily, these are provided by Mozilla, so there is no need to install them by hand.

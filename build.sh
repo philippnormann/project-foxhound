@@ -163,9 +163,13 @@ _prepare_foxhound() {
     fi
   fi
   if [ ! -f "${FOXHOUND_DIR}/.mozconfig" ]; then
-    _status "Setting default mozconfig from Ubuntu profile"
+    local profile=ubuntu
+    if [ "$(uname -s)" = Darwin ]; then
+      profile=mac
+    fi
+    _status "Setting default mozconfig from ${profile} profile"
     if [ -z "$DRY_RUN" ]; then
-      cp "${FOXHOUND_DIR}/taintfox_mozconfig_ubuntu" "${FOXHOUND_DIR}/.mozconfig"
+      cp "${FOXHOUND_DIR}/taintfox_mozconfig_${profile}" "${FOXHOUND_DIR}/.mozconfig"
     fi
   fi
   if [ -n "$RESET_GIT_REPO" ]; then
@@ -230,19 +234,32 @@ _package_foxhound() {
   if [ -n "$WITH_PLAYWRIGHT_INTEGRATION" ]; then
     _status "Applying playwright preferences"
     if [ -z "$DRY_RUN" ]; then
-      mkdir -p "${FOXHOUND_OBJ_DIR}/dist/${FOXHOUND_NAME}/defaults/pref"
-      cp "${PLAYWRIGHT_DIR}/browser_patches/firefox/preferences/playwright.cfg" "${FOXHOUND_OBJ_DIR}/dist/${FOXHOUND_NAME}/"
-      cp "${PLAYWRIGHT_DIR}/browser_patches/firefox/preferences/00-playwright-prefs.js" "${FOXHOUND_OBJ_DIR}/dist/${FOXHOUND_NAME}/defaults/pref/"
+      local resources_dir="${FOXHOUND_OBJ_DIR}/dist/${FOXHOUND_NAME}"
+      if [ "$(uname -s)" = Darwin ]; then
+        local bundles=("${resources_dir}"/*.app)
+        [ "${#bundles[@]}" -eq 1 ] && [ -d "${bundles[0]}/Contents/Resources" ] || _die "Could not find the packaged macOS app"
+        resources_dir="${bundles[0]}/Contents/Resources"
+      fi
+      mkdir -p "${resources_dir}/defaults/pref" || _die "Could not create preferences directory"
+      cp "${PLAYWRIGHT_DIR}/browser_patches/firefox/preferences/playwright.cfg" "${resources_dir}/" || _die "Could not copy Playwright config"
+      cp "${PLAYWRIGHT_DIR}/browser_patches/firefox/preferences/00-playwright-prefs.js" "${resources_dir}/defaults/pref/" || _die "Could not copy Playwright preferences"
     fi
   fi
   _status "Creating Foxhound zip"
   if [ -z "$DRY_RUN" ]; then
     pushd "${FOXHOUND_OBJ_DIR}/dist" || exit 1
-    zip -r foxhound_linux.zip $FOXHOUND_NAME
-    if [ -n "$WITH_PLAYWRIGHT_INTEGRATION" ]; then
-        cp foxhound_linux.zip "foxhound_linux_${PLAYWRIGHT_VERSION}.zip"
+    local archive=foxhound_linux
+    local zip_options=()
+    if [ "$(uname -s)" = Darwin ]; then
+      archive=foxhound_macos
+      zip_options=(-y)
+      rm -f "${archive}.zip" || _die "Could not remove the previous archive"
     fi
-    _status "Zip located at '$(pwd  || true)/foxhound_linux.zip', done!"
+    zip -r "${zip_options[@]}" "${archive}.zip" "$FOXHOUND_NAME" || _die "Could not create Foxhound archive"
+    if [ -n "$WITH_PLAYWRIGHT_INTEGRATION" ]; then
+        cp "${archive}.zip" "${archive}_${PLAYWRIGHT_VERSION}.zip" || _die "Could not copy Playwright archive"
+    fi
+    _status "Zip located at '$(pwd  || true)/${archive}.zip', done!"
     popd > /dev/null || exit 1
   fi
   popd > /dev/null || exit 1

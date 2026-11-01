@@ -6,6 +6,7 @@
 
 int32_t nsHtml5Tokenizer::StateLoopFastestALU(int32_t state, char16_t c,
                                               int32_t pos, char16_t* buf,
+                                              const StringTaint& taint,
                                               bool reconsume,
                                               int32_t returnState,
                                               int32_t endPos) {
@@ -15,6 +16,7 @@ int32_t nsHtml5Tokenizer::StateLoopFastestALU(int32_t state, char16_t c,
 
 int32_t nsHtml5Tokenizer::StateLoopLineColALU(int32_t state, char16_t c,
                                               int32_t pos, char16_t* buf,
+                                              const StringTaint& taint,
                                               bool reconsume,
                                               int32_t returnState,
                                               int32_t endPos) {
@@ -24,6 +26,7 @@ int32_t nsHtml5Tokenizer::StateLoopLineColALU(int32_t state, char16_t c,
 
 int32_t nsHtml5Tokenizer::StateLoopViewSourceALU(int32_t state, char16_t c,
                                                  int32_t pos, char16_t* buf,
+                                                 const StringTaint& taint,
                                                  bool reconsume,
                                                  int32_t returnState,
                                                  int32_t endPos) {
