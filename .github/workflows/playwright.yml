@@ -17,10 +17,19 @@ jobs:
 
   # Test applying playwright patches and installing dependencies
   patch:
-    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            mozconfig: taintfox_mozconfig_ubuntu
+          - os: macos-latest
+            mozconfig: taintfox_mozconfig_mac
+    runs-on: ${{ matrix.os }}
 
     steps:
       - name: Install Dependencies
+        if: runner.os == 'Linux'
         run: |
           sudo apt-get update
           sudo apt-get install -y   \
@@ -39,10 +48,16 @@ jobs:
         with:
           path: foxhound
 
+      - name: Set up Python
+        if: runner.os == 'macOS'
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
       - name: Dry Run
         run: |
           cd foxhound
-          cp taintfox_mozconfig_ubuntu .mozconfig
+          cp "${{ matrix.mozconfig }}" .mozconfig
           bash build.sh -p -n   
     
       - name: Patch

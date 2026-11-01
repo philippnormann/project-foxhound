@@ -175,7 +175,7 @@ jobs:
 
       - name: Bootstrap
         run: |
-          cp "taintfox_mozconfig_ubuntu" ".mozconfig"
+          cp "taintfox_mozconfig_mac" ".mozconfig"
           python3.11 ./mach --no-interactive bootstrap --application-choice=browser
           source .PLAYWRIGHT_VERSION
           echo "Installing ${RUST_VERSION} from .PLAYWRIGHT_VERSION"
@@ -196,3 +196,4 @@ jobs:
           name: foxhound-macos
           path: obj-tf-release/dist/foxhound-*.en-US.mac.dmg
           compression-level: 0
+          if-no-files-found: error
